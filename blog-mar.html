@@ -13,6 +13,265 @@
 
 <main>
 
+<h3>The Odin Project Blog Post 11</h3>
+    <datetime>March 24 2017</datetime>
+    <br>
+    <h4>Week 11 - TDD or Not TDD &amp; Connect Four</h4>
+
+<p>As it turns out, my woes with testing my tic tac toe game from last week were (somewhat) unfounded. After spending hours trying to figure out what I was doing wrong, I asked Stack Overflow and quickly got a response that my code was working on someone else’s machine, and it was likely that I was testing a file saved on the wrong path. In the end, all it took was me re-saving my original game file into the new directory with the spec file I had created. Though extremely frustrating for all the time I wasted, it was reassuring that I was writing the Rspec correctly. Here’s an abbreviated version of the game and spec file: </p>
+
+<code><pre>class Board
+attr_reader :board, :current_turn, :game_over
+
+    def initialize
+        @board = [
+            0, 1, 2,
+            3, 4, 5,
+            6, 7, 8
+            ]
+        @current_turn = "X"
+        @game_over = false
+
+    end
+
+    def show_board
+        print @board[0..2]
+        print "\n"
+        print @board[3..5]
+        print "\n"
+        print @board[6..8]
+    end
+
+    def change_turn
+       @current_turn = @current_turn == "X" ? "O" : "X" unless @game_over == true
+    end
+
+    def player_move(index)
+            if @board[index] == "X" || @board[index] == "O"
+                puts "That space is taken"
+                @current_turn
+            else
+                @board[index] = @current_turn
+                show_board
+                check_for_winner
+                change_turn
+            end
+    end
+
+    private
+    def check_for_winner
+        if @board[0] == @board[4] && @board[4] == @board[8]
+           @game_over = true
+            puts "Three in a row! #{@current_turn} has won!”</pre></code>
+
+<code><pre>require "tictactoe"
+
+describe Board do
+
+
+    before(:all) do
+        @game = Board.new
+    end
+
+
+        describe ".player_move" do
+            it "sets the X or O at the proper place on the board" do
+                @game.player_move(8)
+                expect(@game.board[8]). to eq("X")
+            end
+
+
+            it "changes turn" do
+                expect(@game.current_turn).to eql("O")
+            end
+
+
+            it "sets game over to true when X or O are in 3 consecutive spots" do
+               @game.player_move(0)
+                @game.player_move(5)
+                @game.player_move(1)
+                @game.player_move(6)
+                @game.player_move(2)
+                expect(@game.game_over).to be true
+            end
+
+        end
+
+end </pre></code>
+
+    <p>Before all tests, the first thing I do is create a new Board object called @game. This will be used as my test subject. Because of the way I set up my game, everything runs through the player_move method. Therefore I'm only testing that function. I run three tests on it. The first one is that it sets the X or O to its proper place on my board. I do this by literally making a move with @game.player_move(8), and then expecting the outcome at that space on the board to equal "X". Next, I expect that it changes turn to "O". Finally, I make sure that three in a row sets my game_over instance variable to true which ends the game.</p>
+
+    <p>We were supposed to take this lesson and apply it to a connect four style game but in reverse order. So in real <strong>test driven development</strong> you write the tests first and then write the code to make the tests pass. I began my game this way, but soon became frustrated, just wanted the code to work, neglected the tests, and now the game is fully functional and none of my tests work. Bright side: I built a connect four game, and it was really hard, and it was really satisfying. Down side: I didn't do it TDD style, but I think I'll keep working on it until I figure out what I'm doing wrong. Anyway, here's the game:</p>
+
+    <code><pre>class Game
+    attr_reader :current_turn, :board, :game_over
+
+    def initialize
+        @current_turn = "R"
+        @board = [
+      %w(_ _ _ _ _ _ _),
+      %w(_ _ _ _ _ _ _),
+      %w(_ _ _ _ _ _ _),
+      %w(_ _ _ _ _ _ _),
+      %w(_ _ _ _ _ _ _),
+      %w(_ _ _ _ _ _ _),
+      %w(1 2 3 4 5 6 7)]
+        @game_over = false
+        show_board
+        play
+    end
+
+    def change_turn
+       @current_turn = @current_turn == "R" ? "Y" : "R"
+    end
+
+    def play
+      until @game_over == true
+        place_piece
+        check_for_winner
+        change_turn
+        show_board
+      end
+    end
+
+    def place_piece
+       puts "pick a column to drop your piece #{current_turn}"
+        column = gets.chomp.to_i
+        check_move?(column)
+    end
+
+    def show_board
+      @board.each do |row|
+          puts ' ' + row.join(' ')
+      end
+    end
+
+    def check_move?(move)
+       if (move.between?(1, 7) && @board[0][move-1] == "_")
+         true
+         index = 6
+          while @board[index][move-1] != "_"
+            index -=1
+          end
+           @board[index][move-1] = @current_turn
+        else
+           puts "Invalid move, try again"
+           !change_turn
+       end
+    end
+
+    def check_for_winner
+      (0..5).each do |x|
+			  (0..6).each do |y|
+			    # horizontal
+				  if @board[x][y] == @current_turn &&
+				    @board[x][y+1] == @current_turn &&
+				      @board[x][y+2] == @current_turn &&
+				        @board[x][y+3] == @current_turn
+				          puts "#{current_turn} wins!"
+				          @game_over = true
+				  end
+				  # vertical
+				  if @board[x][y] == @current_turn &&
+				    @board[x+1][y] == @current_turn &&
+				      @board[x+2][y] == @current_turn &&
+				        @board[x+3][y] == @current_turn
+				          puts "#{current_turn} wins!"
+				          @game_over = true
+				  end
+				  # diagonal left
+				  if @board[x][y] == @current_turn &&
+				    @board[x+1][y-1] == @current_turn &&
+				      @board[x+2][y-2] == @current_turn &&
+				        @board[x+3][y-3] == @current_turn
+				          puts "#{current_turn} wins!"
+				          @game_over = true
+				  end
+				  #diagonal right
+				  if @board[x][y] == @current_turn &&
+				    @board[x+1][y+1] == @current_turn &&
+				      @board[x+2][y+2] == @current_turn &&
+				        @board[x+3][y+3] == @current_turn
+				          puts "#{current_turn} wins!"
+				          @game_over = true
+				  end
+				end
+			end
+    end
+
+end</pre></code>
+
+    <p>TOP wanted us to practice TDD with this project, claiming this game "wouldn't take too much brain power". Preposterous. I spent three, long days stewing over this program, and I think it took the most ingenuity of any project we've put together so far. The basic structure is the same as my tic tac toe game in that it has a central method that the other methods get called from. The game_over instance variable that signfies the end of the game is also the same. However, this time the board is made up of a two-dimensional array, 42 places in all, and the user input is handled a little differently. </p>
+
+    <p>As I mentioned, the tests for this game don't currently work, but I'm happy right now that the game is fully functional. I'll figure out the tests next.</p>
+
+    <code><pre>@board = [
+      %w(_ _ _ _ _ _ _),
+      %w(_ _ _ _ _ _ _),
+      %w(_ _ _ _ _ _ _),
+      %w(_ _ _ _ _ _ _),
+      %w(_ _ _ _ _ _ _),
+      %w(_ _ _ _ _ _ _),
+      %w(1 2 3 4 5 6 7)]</pre></code>
+
+    <p>The bottom array of the board is made up of an array of numbers. In the place_piece method, the user is asked to choose a column to place his/her piece. Once the program receives this number it sends that info to the check_move? method. </p>
+
+    <cod><pre>def check_move?(move)
+       if (move.between?(1, 7) && @board[0][move-1] == "_")
+         true
+         index = 6
+          while @board[index][move-1] != "_"
+            index -=1
+          end
+           @board[index][move-1] = @current_turn
+        else
+           puts "Invalid move, try again"
+           !change_turn
+       end
+    end</pre></code>
+
+    <p>If this number is on the board and current place is occupied by "_", either R or Y will take its place. If that place is already taken, either R or Y will try the next place up, until it gets to the top of the column. If the whole column is taken or if it the user entered a number not on the board, it will respond with an error message. Though this part was tricky, I never thought I was going to figure out how to solve the check_winner method.</p>
+
+    <code><pre>def check_for_winner
+      (0..5).each do |x|
+        (0..6).each do |y|
+			 # horizontal
+                if @board[x][y] == @current_turn &&
+				  @board[x][y+1] == @current_turn &&
+				      @board[x][y+2] == @current_turn &&
+				        @board[x][y+3] == @current_turn
+				          puts "#{current_turn} wins!"
+				          @game_over = true
+				  end
+				# vertical
+				if @board[x][y] == @current_turn &&
+				 @board[x+1][y] == @current_turn &&
+				    @board[x+2][y] == @current_turn &&
+				        @board[x+3][y] == @current_turn
+				          puts "#{current_turn} wins!"
+				          @game_over = true
+				  end
+				  # diagonal left
+				  if @board[x][y] == @current_turn &&
+				    @board[x+1][y-1] == @current_turn &&
+				      @board[x+2][y-2] == @current_turn &&
+				        @board[x+3][y-3] == @current_turn
+				          puts "#{current_turn} wins!"
+				          @game_over = true
+				  end
+				  #diagonal right
+				  if @board[x][y] == @current_turn &&
+				    @board[x+1][y+1] == @current_turn &&
+				      @board[x+2][y+2] == @current_turn &&
+				        @board[x+3][y+3] == @current_turn
+				          puts "#{current_turn} wins!"
+				          @game_over = true
+				  end
+				end
+			end</pre></code>
+
+    <p>It took me hours of considering to figure out how to loop over my board and then write the loop into my indeces as it's written in the solution. It ended up being pretty simple, which is often the case. To find four in a row, I used an each loop of the columns within an each loop of the rows. Admittedly, I had no idea it was going to work until I tried the horizontal case, which I knew kept the same x-index, with an incrementing y-index. Once that worked, the rest was cake. For a vertical winner, the y stays the same and x increments. For a diagonal left the x increments while the y decrements, and for a diagonal right both x and y increment. </p>
+
 <h3>March 22 2017</h3>
     <ul>
         <li>Completed Connect Four <a href="https://github.com/ks927/Projects/blob/master/Connect_four/lib/connect_four.rb">GitHub</a> but need to work on the testing</li>
