@@ -13,6 +13,14 @@
 
 <main>
 
+<h3>March 27 2017</h3>
+    <ul>
+        <li>Git lesson on TOP</li>
+        <ul>
+            <li><a href="https://www.atlassian.com/git/tutorials/undoing-changes">Git tutorial</a> readings</li>
+        </ul>
+    </ul>
+
 <h3>The Odin Project Blog Post 11</h3>
     <datetime>March 24 2017</datetime>
     <br>
@@ -203,7 +211,6 @@ end</pre></code>
 
     <p>TOP wanted us to practice TDD with this project, claiming this game "wouldn't take too much brain power". Preposterous. I spent three, long days stewing over this program, and I think it took the most ingenuity of any project we've put together so far. The basic structure is the same as my tic tac toe game in that it has a central method that the other methods get called from. The game_over instance variable that signfies the end of the game is also the same. However, this time the board is made up of a two-dimensional array, 42 places in all, and the user input is handled a little differently. </p>
 
-    <p>As I mentioned, the tests for this game don't currently work, but I'm happy right now that the game is fully functional. I'll figure out the tests next.</p>
 
     <code><pre>@board = [
       %w(_ _ _ _ _ _ _),
@@ -230,7 +237,7 @@ end</pre></code>
        end
     end</pre></code>
 
-    <p>If this number is on the board and current place is occupied by "_", either R or Y will take its place. If that place is already taken, either R or Y will try the next place up, until it gets to the top of the column. If the whole column is taken or if it the user entered a number not on the board, it will respond with an error message. Though this part was tricky, I never thought I was going to figure out how to solve the check_winner method.</p>
+    <p>If this number is on the board and current place is occupied by "_", either R or Y will take its place. If that place is already taken, either R or Y will try the next place up, until it gets to the top of the column. If the whole column is taken or if the user entered a number not on the board, it will respond with an error message. Though this part was tricky, I never thought I was going to figure out how to solve the check_winner method.</p>
 
     <code><pre>def check_for_winner
       (0..5).each do |x|
@@ -271,6 +278,8 @@ end</pre></code>
 			end</pre></code>
 
     <p>It took me hours of considering to figure out how to loop over my board and then write the loop into my indeces as it's written in the solution. It ended up being pretty simple, which is often the case. To find four in a row, I used an each loop of the columns within an each loop of the rows. Admittedly, I had no idea it was going to work until I tried the horizontal case, which I knew kept the same x-index, with an incrementing y-index. Once that worked, the rest was cake. For a vertical winner, the y stays the same and x increments. For a diagonal left the x increments while the y decrements, and for a diagonal right both x and y increment. </p>
+
+       <p>As I mentioned, the tests for this game don't currently work, but I'm happy right now that the game is fully functional. I'll figure out the tests next.</p>
 
 <h3>March 22 2017</h3>
     <ul>
