@@ -13,6 +13,72 @@
 
 <main>
 
+<h3>The Odin Project Blog Post 13</h3>
+    <datetime>April 10 2017</datetime>
+    <br>
+    <h4>Week 13 - Sinatra</h4>
+
+<p> One of the things I remember from the brief look at Ruby on Rails I got in the Web Development 101 section of TOP was how much of the app is created for you when you simply type <code> rails generate</code> in the terminal. Because of how much of the “dirty work” is taken out of your hands, Rails can be perceived as having a magical quality to it which may lead to a fundamental misunderstanding of what is happening under the hood. To avoid such misconception, TOP first introduces us to Sinatra. Sinatra is a lightweight Ruby framework that doesn’t put together the complex file structure of a web application for you. Learning how to set up <em>routes</em> and connect them with <em>views</em> on our own sort of demystifies the magic of Rails, and in theory, should reduce the learning curve. </p>
+
+<p>This isn’t to say that Sinatra in itself is nothing but a stepping stone. Though it is relatively simple, in that there isn’t a whole to it, there are some cool things TOP had us do with it right off the bat. Before tossing us into the deep end, we were to follow a tutorial from <a href=“http://tutorials.jumpstartlab.com/projects/web_guesser.html>Jumpstart Labs</a> to create a pretty simple random number guesser game. Using the concepts from this tutorial, we then were asked to convert a couple of old projects into Sinatra applications - the first being the caesar cipher function. </p>
+
+    <code><pre> /caesar_cipher/caesar_cipher.rb
+    def caesar_cipher(string, num)
+    @cipher = ""
+
+    string.each_char do |ch|
+        ch = ch.ord
+        if ch.between?(97, 122)  || ch.between?(65, 90)
+            ch += (num % 26)
+        elsif ch > 122 || ch.between?(90, 97)
+            ch -= (num % 26)
+        end
+        ch = ch.chr
+        @cipher << ch
+    end
+    @cipher
+
+end
+
+get '/' do
+    string = params["string"] || ""
+    num = params["num"].to_i
+    @cipher = caesar_cipher(string, num)
+    erb :index, :locals => { :cipher => @cipher }
+end
+</pre></code>
+
+<p>The portion of the code to focus on here is the get block at the bottom. This is known as the <em>route</em>. When nothing is specified after the '/', it automatically looks for the <em>views</em> folder in the same directory. The line starting with erb tells the block to look for the file named 'index' and then names what variable(s) are used from this file in that index file. In this particular case, I only use the @cipher variable in my index.erb file. </p>
+
+<code><pre> /caeser_cipher/views/index.erb
+<xmp>
+<html>
+<head>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+    <body>
+        <form>
+            <h1>This is the Caesar Cipher</h1>
+            <p>Type a string you'd like to cipher:</p>
+            <input type="text" name="string" />
+            <p>Type how many letters you'd like it shifted:</p>
+            <input type="text" name="num" />
+            <br>
+            <input type="submit" value="cipher!" />
+            <p>Your ciphered string: <%= @cipher %></p>
+        </form>
+    </body>
+</html></xmp></pre></code>
+
+<p>Why does this look like an html file but it's labeled .erb? .erb stands for embedded Ruby, and essentialy means exactly that. It has Ruby from the get block in the <em>route</em> embedded within it. Likewise, the .rb file uses the user input taken from the text inputs here. What gets entered here becomes the parameters of the web address. Back in the get block, they're accessed via params["string"] and params["num"] because those are the names of the inputs. The params become the caeser cipher's parameters, and the @cipher decrypted variable gets returned to the .erb file.</p>
+
+<p>This is a simple example because it is one method with one variable. I am currently working on converting my Hangman command line game, which so far has been a much tougher challenge.</p>
+
+<h3>April 6 2017</h3>
+    <ul>
+        <li>Worked on converting Hangman game to Sinatra app</li>
+    </ul>
+
 <h3>April 5 2017</h3>
     <ul>
         <li>Watched 3 Sinatra screencasts on <a href="https://github.com/ga-wdi-lessons/sinatra-walkthrough">this site</a></li>
