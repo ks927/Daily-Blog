@@ -22,7 +22,7 @@
 
 <p> Something that always intimidated me about Rails was the amount of files and folders that come along with a single application. I thought to myself I’d never be able to learn this because there’s just too much stuff and I’d never be able to keep it all straight. Alas, the file directory of the app is split up deliberately to be very well organized. Until now I had no idea the rhyme or reason, but TOP and Michael Hartl’s tutorials do a thorough job of breaking it down and explaining it all. Rails apps follow a Model View Controller structure. Every application has a models, a views, and a controllers directory - each with a specific job. Once you understand the purpose of MVC, the mist surrounding Rails starts to clear. MVC is not only integral to understanding Rails but web development as a whole, and I will attempt to explain it here: </p>
 
-<img src="mvc-rails.png" />
+<img src="images/mvc-rails.png" />
 
     <p> Obviously, it all starts at the user’s computer, when a request is made from the browser. Ignoring the server element here, this information gets parsed by the controller which asks the model for any data or other information it needs. The model is the one that connects to the database, stores or <strong>validates</strong> data, and does the heavy lifting. The info then gets returned to the controller which gives it to the view; where it gets turned into something to be displayed back to the user. The view is where you find the html and erb. It has no idea what to display until the controller fills it in. Once this has been done, it is finally returned through the controller as a web page back to the browser. Simple! So how does this apply to what I built this week? </p>
 
@@ -239,7 +239,7 @@ end
 <h3>April 4 2017</h3>
     <ul>
         <li>Completed Web Guesser App <a href="https://github.com/ks927/Sinatra">GitHub</a></li>
-        <img src="web_guess.png" />
+        <img src="images/web_guess.png" />
     </ul>
 
 <h3>April 3 2017</h3>

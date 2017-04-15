@@ -65,7 +65,7 @@ server.listen(8000);</pre></code>
     <ul>
         <li>Learned about the Event Loop by watching "Philip Roberts: what the heck is the Event Loop anyway?"</li>
             <figure>
-            <img src="event-loop.png" alt="event loop" />
+            <img src="images/event-loop.png" alt="event loop" />
             <figcaption>"Hi" gets logged to the console first. The setTimeout timer gets pushed to the stack, then set aside to the webapis stack. Next, "JSConfEU" is logged. After 5 seconds, the webapis stack sends the timer to the task queue, where because it is the first thing in line, the event loop pushes it to the call stack where it can be called. Finally, after the 5 seconds has passed, "there" is logged to the console.</figcaption>
             </figure>
         <li>Read Chapter 2: Fundamentals - in <i>Developing Backbone.js Applications</i> - how the MVC design pattern is implemented in Backbone and other JS frameworks</li>
