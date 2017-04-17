@@ -103,7 +103,7 @@
 end
     </pre></code>
 
-    <p>This is my controller for the toy app I created. It contains the most code by far out of the models/views/controllers files. This makes sense because it is the core of the application, and needs to handle requests from the client. In this case, we can see the typical CRUD methods (create, edit, update, destroy) for a user page. Once one of these methods is invoked, the controller checks with the model for anything it needs.</p>
+    <p>This is my controller for the toy app I created. It contains the most code by far out of the models/views/controllers files. This makes sense because it is the core of the application, and needs to handle requests from the client. In this case, we can see the typical CRUD methods (create, edit, update, destroy) for a user page (think create/edit/delete user). Once one of these methods is invoked, the controller checks with the model for anything it needs.</p>
 
     <code><pre>toy_app/app/models/user.rb
     class User &lt; ApplicationRecord
@@ -113,7 +113,7 @@ end
 end
     </pre></code>
 
-    <p>Here we have a just 5 lines of code that make up the user model of my application. It allows each user to have multiple posts and requires that a user have a name and an email in order to be validated. When the model is done with its job, the data can be sent to the view to be made ready for the screen.</p>
+    <p>Here we have just 5 lines of code that make up the user model of my application. It allows each user to have multiple posts and requires that a user have a name and an email in order to be validated. If what the client entered in his/her browser meets the requirements here, a new user is added to the database. When the model is done with its job, the data can be sent to the view to be made ready for the screen.</p>
 
     <code><pre> toy_app/views/user/index.html.erb
     <xmp>
