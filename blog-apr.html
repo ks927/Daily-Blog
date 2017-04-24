@@ -13,6 +13,94 @@
 
 <main>
 
+<h3>The Odin Project Blog Post 15</h3>
+    <datetime>April 23 2017</datetime>
+    <br>
+    <h4>Week 15 - Controller Testing</h4>
+
+
+<p> Based on my previous tribulations with testing, I did not expect this week’s lesson to go as smoothly as it did. Looking over the test suite before I started, I got that familiar anxiety that Rspec gave me in the Ruby section. Then Rails worked its magic again, and almost all of my worries melted away. Entering  <code>rails generate controller StaticPages home help</code> in the terminal created my controller test file for me, with the first two tests already written out! </p>
+
+
+<p> One thing I did not mention in my MVC post last week was the role of routes in an application. Before I dive into the test file here, I think it would behoove me to explain the router.</p>
+
+<code><pre> /config/routes.rb
+
+Rails.application.routes.draw do
+  root ‘static_pages#home
+  get ‘static_pages/home'
+  get ‘static_pages/help'
+end
+</pre></code>
+
+    <p> Yet another file created by the generate command, is the routes.rb file shown here. Depending on the parameters given to <code>generate</code> determines what Rails will put in the router for you. In this case, because <code>generate controller StaticPages home help</code> created a controller with methods for a static home page and a static help page, routes.rb <i>routes</i> to those pages with the GET http verb. This is something that gets tested, and will be modified when testing a new page. <p>
+
+<code><pre> /test/controllers/static_pages_controller_test.rb
+
+require 'test_helper'
+
+class StaticPagesControllerTest &lt; ActionDispatch::IntegrationTest
+
+  test "should get home" do
+    get static_pages_home_url
+    assert_response :success
+  end
+
+  test "should get help" do
+    get static_pages_help_url
+    assert_response :success
+  end
+end
+</pre></code>
+
+<p>Here we have the test suite for our controller. When we run <code>rails test</code> in the terminal, this code tests that our <i>controller</i> is functioning properly. Each of the two test functions here gets its appropriate url and asserts (via the assert_response method) that the connection is a success. It is literally saying "Let’s test the Home page by issuing a GET request to the Static Pages home URL and then making sure we receive a ‘success’ status code in response." If the controller is working as it should, the test will pass. With the hard part done for me, in order to create an About page, all I needed to do was copy what Rails had already given to me. </p>
+
+<code><pre>test "should get about" do
+    get static_pages_about_url
+    assert_response :success
+  end</pre></code>
+
+<p>In the way of TDD, first we write the test to fail. The reason it gives us for failure is that it could not GET static_pages_about_url. Thus, we make this connection in our routes.rb file by adding 'get static_pages/about' to the list of routes. If we run the test again, it fails because the 'about' command couldn't be found in the StaticPagesController. </p>
+
+<code><pre>/controllers/static_pages_controller.rb
+
+class StaticPagesController &lt; ApplicationController
+  def home
+  end
+
+  def help
+  end
+
+  def about
+  end
+
+end
+</pre></code>
+
+<p>Here in the controller file sit the methods that invoke the respective pages we have created so far. Home and help were created automatically with the 'generate' command, while the about method needed to be added manually. If we run the test now, the terminal tells us it is missing a template for the request. What the test needs to pass is a file in the views directory to show to the screen when the controller makes a request to the about page.</p>
+
+<code><pre>$ touch app/views/static_pages/about.html.erb
+</pre></code>
+
+<p>This is the final step in the MVC flow, and the only code that actually gets rendered for the browser to see. Within it we can include embedded Ruby to DRY out our code, but for now I will just include some HTML. </p>
+
+<code><pre> /views/static_pages/about.html.erb
+<xmp>
+<h1>About</h1>
+<p>
+  The <a href="http://www.railstutorial.org/"><em>Ruby on Rails
+  Tutorial</em></a> is a
+  <a href="http://www.railstutorial.org/book">book</a> and
+  <a href="http://screencasts.railstutorial.org/">screencast series</a>
+  to teach web development with
+  <a href="http://rubyonrails.org/">Ruby on Rails</a>.
+  This is the sample application for the tutorial.
+</p>
+</xmp>
+</pre></code>
+
+<p>Finally, if we run <code>rails test</code> one more time, we should get 3 tests, 3 assertions, 0 failures, 0 errors, 0 skips, and a fully GREEN test; which means our controller is finally working as it should be. But running a <code>rails server</code> and navigating to the About page just to be sure is always good idea.</p>
+
 <h3>April 19 2017</h3>
     <ul>
         <li>Completed sample app</li>
@@ -51,7 +139,7 @@
 
 <img src="images/mvc-rails.png" />
 
-    <p> Obviously, it all starts at the user’s computer, when a request is made from the browser. Ignoring the server element here, this information gets parsed by the controller which asks the model for any data or other information it needs. The model is the one that connects to the database, stores or <strong>validates</strong> data, and does the heavy lifting. The info then gets returned to the controller which gives it to the view; where it gets turned into something to be displayed back to the user. The view is where you find the html and erb. It has no idea what to display until the controller fills it in. Once this has been done, it is finally returned through the controller as a web page back to the browser. Simple! So how does this apply to what I built this week? </p>
+    <p> Obviously, it all starts at the user’s computer, when a request is made from the browser. Ignoring the server and router right now, this information gets parsed by the controller which asks the model for any data or other information it needs. The model is the one that connects to the database, stores or <strong>validates</strong> data, and does the heavy lifting. The info then gets returned to the controller which gives it to the view; where it gets turned into something to be displayed back to the user. The view is where you find the html and erb. It has no idea what to display until the controller fills it in. Once this has been done, it is finally returned through the controller as a web page back to the browser. Simple! So how does this apply to what I built this week? </p>
 
     <code><pre>toy_app/app/controllers/user_controller.rb
     class UsersController &lt; ApplicationController
@@ -212,7 +300,7 @@ end
             ch -= (num % 26)
         end
         ch = ch.chr
-        @cipher << ch
+        @cipher &lt;&lt; ch
     end
     @cipher
 
