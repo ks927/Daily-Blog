@@ -13,6 +13,74 @@
 
 <main>
 
+<h3>The Odin Project Blog Post 16</h3>
+    <datetime>April 30 2017</datetime>
+    <br>
+    <h4>Week 16 - Changing the Layout</h4>
+
+<p> The latest chapter in Michael Hartl’s Rails tutorial covered several new topics dealing with the organization of our code and display of our application. Some things were new to me while others refreshed my memory. For instance, we used CSS’s bootstrap framework to begin styling the pages. Though I’ve worked with bootstrap before, I learned how to organize the SCSS rules so that they are nested. We also learned how to use partials to declutter our layout file. I had a very brief encounter with partials while I studied Node, but this lesson deepened my understanding of the topic. Once our partials were laid out, we changed our get routes so that they would route to /home instead of /static_pages/home, /about instead of /static_pages/about, etc. To figure out if all this was working properly, we ran our first integration test. At the risk of spending too long or writing too much, the focus of the rest of this post will be on partials and how they fit into the layout file. </p>
+
+<p> Within our application file structure, there is a folder in our views directory called ‘layout’. It is in this layout directory that the Rails magic occurs for the V section of the MVC flow. If we have the same piece of HTML across several pages of our site, instead of writing it out each time we make a new page, we simply have it <code>render</code> in the main file of the layout directory. Last week, we grazed the surface of this by sticking the &lt;title&gt; for each of our static_pages in the /layouts/application.html.erb file. We also learned how the <code>yield</code> statement is used to display what is in each static_page. This week, however, we ramped it up by creating ‘partials’ for a header, footer, and assets, and then having them render in our layout. This is the end result of the layout:</p>
+
+<code><pre> /views/layouts/application.html.erb
+<xmp>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= full_title(yield(:title)) %></title>
+    <%= render 'layouts/rails_default' %>
+  </head>
+  <body>
+    <%= render 'layouts/header' %>
+    <div class="container">
+    <%= yield %>
+    <%= render 'layouts/footer' %>
+  </body>
+</html>
+</xmp>
+</pre>
+</code>
+
+<p>First, we'll go over the code that displays our &lt;title&gt;. It should be evident what we have here is a function named full_title taking the parameter :title and <code>yielding</code> it (i.e. displaying it to the page). This is that full_title function; currently sitting in the helpers folder:</p>
+
+<code><pre> /apps/helpers/application_helper.rb
+module ApplicationHelper
+    # returns full title or base title if none given
+    def full_title(page_title = '')
+       base_title = "Ruby on Rails Tutorial Sample App"
+        if page_title.empty?
+            base_title
+        else
+            page_title + " | " + base_title
+        end
+    end
+end</pre></code>
+
+<p>It does precisely what the comment says it does. At the top of all our static_pages, there is a <code>provide</code> statement that tells Rails what the :title of the page is. This title gets plugged into the full_title function and the result is yielded to the page. If the page has no title (currently only the home page), than the base_title is all that gets displayed. Next we can dicuss how our partials are rendered.</p>
+
+<p><code>render</code> is a Rails helper method that looks for a file with the name you give it, evalutes its contents, and inserts the results into the view. As you can see, the main body of the page is going to be displayed by <code>yield</code> which is sandwiched by our header and footer partials. Let's take a look at <code>'layouts/header'</code> as an example of a partial.</p>
+
+<code><pre> /views/layouts/_header.html.erb
+<xmp>
+<header class="navbar navbar-fixed-top navbar-inverse">
+      <div class="container">
+        <%= link_to "sample app", root_path, id: "logo" %>
+        <nav>
+          <ul class="nav navbar-nav navbar-right">
+            <li><%= link_to "Home",   root_path %></li>
+            <li><%= link_to "Help",   help_path %></li>
+            <li><%= link_to "Log in", '#' %></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+</xmp>
+</pre></code>
+
+<p>It is common practice to have a sitewide header and footer, therefore these partials are a good habit to adopt. A few points are necessary to mention about this file. First, we can see from the top of the code that the file needs to be within the layouts directory for the render method to find it. Second, partials are distinguishable by the underscore that leads their filename. The other partials we are rendering work similarly to keep application.html.erb clean of too much raw html. The rails_default file just contains our JavaScript and CSS links, while the footer looks comparable to the header. In the same way our header uses link_to to navigate to the home and help pages, the footer uses link_to to take users to about and contact. </p>
+
+<p>The "Log in" page hasn't been created yet, and routing to <i>named routes</i> as well as the testing of all this stuff are topics for another post.</p>
+
 <h3>April 27 2017</h3>
     <ul>
         <li>Read TOP SQL section</li>
@@ -92,7 +160,7 @@ end
     assert_response :success
   end</pre></code>
 
-<p>In the way of TDD, first we write the test to fail. The reason it gives us for failure is that it could not GET static_pages_about_url. Thus, we make this connection in our routes.rb file by adding 'get static_pages/about' to the list of routes. If we run the test again, it fails because the 'about' command couldn't be found in the StaticPagesController. </p>
+    <p>In the way of TDD, first we write the test to fail. The reason it gives us for failure is that it could not GET static_pages_about_url. Thus, we make this connection in our routes.rb file by adding <code>get static_pages/about</code> to the list of routes. If we run the test again, it fails because the 'about' command couldn't be found in the StaticPagesController. </p>
 
 <code><pre>/controllers/static_pages_controller.rb
 
