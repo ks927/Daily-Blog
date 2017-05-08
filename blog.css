@@ -127,7 +127,7 @@ nav li {
 
 h1, h2 {
   width: 50%;
-  margin-right: 10%;
+  margin-right: 20%;
   padding: 0;
   display: inline;
 }
@@ -190,4 +190,15 @@ a:hover {
     color: #000099;
 }
 
+#cat_head {
+    height: 30px;
+}
 
+#categories {
+    width: 600px;
+}
+
+#selected {
+    height: 150px;
+    width: 600px;
+}
