@@ -89,6 +89,10 @@ nav li {
     margin-top: 140px;
 }
 
+#heading {
+    margin-right: 0px;
+}
+
 #caption {
     display: table-cell;
     vertical-align: middle;
