@@ -55,7 +55,9 @@ SELECT player, teamid,coach, gtime
 
 <p>One of the trickier but more useful actions SQL can perform is joining tables together and making queries from the newly compounded info. The code above uses the <code>JOIN</code> keyword to link together a table called "goal" and a table called "eteam" <code>ON</code> their matching columns. In this case the "teamid" from goal and "id" from eteam match up, so the tables fit together. The query I've made is to select the player, teamid, and gtime(game time) from goal and the coach from eteam, for every goal scored before the 10th minute. When the code is run, I will get back a four-columm table with all gtimes under 10. I could go on and on describing different examples of queries, but actually coding them is far better practice than writing or reading about them.</p>
 
-<p>Thus, for the sake of continuity, I feel obligated to at least mention the D in CRUD. None of the resources spent much time on deletion, and that's probably because it's almost identical to select. If I <code>DELETE from Categories WHERE CategoryID = 1</code>, the entire first row will be wiped from the database. Like querying, we can use WHERE to make conditions for deletion, and if we do not, everything from the specified table will be deleted.</p>
+<p>Having mentioned the C, R, and U, for the sake of continuity I feel obligated to at least mention the D in CRUD. None of the resources spent much time on deletion, and that's probably because it's almost identical to select. Let's return to the Categories table I created earlier. If I <code>DELETE from Categories WHERE CategoryID = 1</code>, the entire first row will be wiped from the database. Like querying, we can use WHERE to make conditions for deletion, and if we do not, everything from the specified table will be deleted. </p>
+
+<p>Simple examples, but the conditions entered can make things more complex. Next week I will learn about Active Record and how that fits into the application structure.</p>
 
 <h3>May 3-4 2017</h3>
     <ul>
@@ -73,7 +75,7 @@ SELECT player, teamid,coach, gtime
     </main>
 
     <footer>
-    <a href="blog-mar.html" class="next">March posts>></a>
+    <a href="blog-apr.html" class="next">April posts>></a>
     </footer>
     </body>
 </html>
