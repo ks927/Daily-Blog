@@ -17,7 +17,7 @@
     <datetime>April 30 2017</datetime>
     <br>
     <h4>Week 16 - Changing the Layout</h4>
-
+<article>
 <p> The latest chapter in Michael Hartl’s Rails tutorial covered several new topics dealing with the organization of our code and display of our application. Some things were new to me while others refreshed my memory. For instance, we used CSS’s bootstrap framework to begin styling the pages. Though I’ve worked with bootstrap before, I learned how to organize the SCSS rules so that they are nested. We also learned how to use partials to declutter our layout file. I had a very brief encounter with partials while I studied Node, but this lesson deepened my understanding of the topic. Once our partials were laid out, we changed our get routes so that they would route to /home instead of /static_pages/home, /about instead of /static_pages/about, etc. To figure out if all this was working properly, we ran our first integration test. At the risk of spending too long or writing too much, the focus of the rest of this post will be on partials and how they fit into the layout file. </p>
 
 <p> Within our application file structure, there is a folder in our views directory called ‘layout’. It is in this layout directory that the Rails magic occurs for the V section of the MVC flow. If we have the same piece of HTML across several pages of our site, instead of writing it out each time we make a new page, we simply have it <code>render</code> in the main file of the layout directory. Last week, we grazed the surface of this by sticking the &lt;title&gt; for each of our static_pages in the /layouts/application.html.erb file. We also learned how the <code>yield</code> statement is used to display what is in each static_page. This week, however, we ramped it up by creating ‘partials’ for a header, footer, and assets, and then having them render in our layout. This is the end result of the layout:</p>
@@ -80,6 +80,7 @@ end</pre></code>
 <p>It is common practice to have a sitewide header and footer, therefore these partials are a good habit to adopt. A few points are necessary to mention about this file. First, we can see from the top of the code that the file needs to be within the layouts directory for the render method to find it. Second, partials are distinguishable by the underscore that leads their filename. The other partials we are rendering work similarly to keep application.html.erb clean of too much raw html. The rails_default file just contains our JavaScript and CSS links, while the footer looks comparable to the header. In the same way our header uses link_to to navigate to the home and help pages, the footer uses link_to to take users to about and contact. </p>
 
 <p>The "Log in" page hasn't been created yet, and routing to <i>named routes</i> as well as the testing of all this stuff are topics for another post.</p>
+</article>
 
 <h3>April 27 2017</h3>
     <ul>
@@ -117,8 +118,7 @@ end</pre></code>
     <datetime>April 23 2017</datetime>
     <br>
     <h4>Week 15 - Controller Testing</h4>
-
-
+<article>
 <p> Based on my previous tribulations with testing, I did not expect this week’s lesson to go as smoothly as it did. Looking over the test suite before I started, I got that familiar anxiety that Rspec gave me in the Ruby section. Then Rails worked its magic again, and almost all of my worries melted away. Entering  <code>rails generate controller StaticPages home help</code> in the terminal created my controller test file for me, with the first two tests already written out! </p>
 
 
@@ -200,6 +200,7 @@ end
 </pre></code>
 
 <p>Finally, if we run <code>rails test</code> one more time, we should get 3 tests, 3 assertions, 0 failures, 0 errors, 0 skips, and a fully GREEN test; which means our controller is finally working as it should be. But running a <code>rails server</code> and navigating to the About page just to be sure is always good idea.</p>
+</article>
 
 <h3>April 19 2017</h3>
     <ul>
@@ -232,7 +233,7 @@ end
     <datetime>April 14 2017</datetime>
     <br>
     <h4>Week 14 - Beginning Rails and MVC</h4>
-
+<article>
 <p> While I could spend this post writing about something I have a stronger grasp of, like the Hangman project I completed using Sinatra earlier in the week, there are two reasons I’m not going to do that. First, though that program vastly out-scopes what I wrote about last week, I would more or less be rehashing the main points of routes and views in the Sinatra framework. Second, one of the main reasons for these posts is so that I can further my understanding of difficult concepts via writing. That is why I’m choosing to write about the second “project” I finished this week. It was the second Rails tutorial TOP has led us through. However, this one actually felt like it was laying an educational foundation to build upon. From the very limited exposure I’ve had to the magic of Rails so far, I will attempt to explain what I picked up. </p>
 
 <p> Something that always intimidated me about Rails was the amount of files and folders that come along with a single application. I thought to myself I’d never be able to learn this because there’s just too much stuff and I’d never be able to keep it all straight. Alas, the file directory of the app is split up deliberately to be very well organized. Until now I had no idea the rhyme or reason, but TOP and Michael Hartl’s tutorials do a thorough job of breaking it down and explaining it all. Rails apps follow a Model View Controller structure. Every application has a models, a views, and a controllers directory - each with a specific job. Once you understand the purpose of MVC, the mist surrounding Rails starts to clear. MVC is not only integral to understanding Rails but web development as a whole, and I will attempt to explain it here: </p>
@@ -365,7 +366,7 @@ end
     </pre></code>
 
     <p>Without getting bogged down on the details of the code within this file, it is just important to know that whatever method the client invoked in the controller was validated by the model and will now be transmitted as html via erb in the view. If we choose to create a user, the model validates the name and email, and the view shows us a new user. If we choose to destroy a user, the controller goes to the model which finds the user in the database. The view asks if we are sure. If we say yes, the controller tells the model to delete that user from the database, and the view shows us a page without that user.</p>
-
+</article>
 
 <h3>April 13 2017</h3>
     <ul>
@@ -383,7 +384,7 @@ end
     <datetime>April 10 2017</datetime>
     <br>
     <h4>Week 13 - Sinatra</h4>
-
+<article>
 <p> One of the things I remember from the brief look at Ruby on Rails I got in the Web Development 101 section of TOP was how much of the app is created for you when you simply type <code> rails generate</code> in the terminal. Because of how much of the “dirty work” is taken out of your hands, Rails can be perceived as having a magical quality to it which may lead to a fundamental misunderstanding of what is happening under the hood. To avoid such misconception, TOP first introduces us to Sinatra. Sinatra is a lightweight Ruby framework that doesn’t put together the complex file structure of a web application for you. Learning how to set up <em>routes</em> and connect them with <em>views</em> on our own sort of demystifies the magic of Rails, and in theory, should reduce the learning curve. </p>
 
 <p>This isn’t to say that Sinatra in itself is nothing but a stepping stone. Though it is relatively simple, in that there isn’t a whole to it, there are some cool things TOP had us do with it right off the bat. Before tossing us into the deep end, we were to follow a tutorial from <a href=“http://tutorials.jumpstartlab.com/projects/web_guesser.html>Jumpstart Labs</a> to create a pretty simple random number guesser game. Using the concepts from this tutorial, we then were asked to convert a couple of old projects into Sinatra applications - the first being the caesar cipher function. </p>
@@ -439,6 +440,7 @@ end
 <p>Why does this look like an html file but it's labeled .erb? .erb stands for embedded Ruby, and essentialy means exactly that. It has Ruby from the get block in the <em>route</em> embedded within it. Likewise, the .rb file uses the user input taken from the text inputs here. What gets entered here becomes the parameters of the web address. Back in the get block, they're accessed via params["string"] and params["num"] because those are the names of the inputs. The params become the caeser cipher's parameters, and the @cipher decrypted variable gets returned to the .erb file.</p>
 
 <p>This is a simple example because it is one method with one variable. I am currently working on converting my Hangman command line game, which so far has been a much tougher challenge.</p>
+</article>
 
 <h3>April 6 2017</h3>
     <ul>
@@ -466,6 +468,7 @@ end
     </main>
 
     <footer>
+    <a href="blog-may.html" class="last">&lt;&lt;May Posts</a>
     <a href="blog-mar.html" class="next">March posts>></a>
     </footer>
 

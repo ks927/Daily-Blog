@@ -131,7 +131,7 @@ nav li {
 
 h1, h2 {
   width: 50%;
-  margin-right: 20%;
+  margin-right: 15%;
   padding: 0;
   display: inline;
 }
@@ -192,6 +192,11 @@ a {
 
 a:hover {
     color: #000099;
+}
+
+article {
+    letter-spacing: 0.5px;
+    line-height: 1.5;
 }
 
 #cat_head {

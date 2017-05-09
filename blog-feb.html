@@ -30,7 +30,7 @@ end
     <datetime>February 24 2017</datetime>
     <br>
     <h4>Week 7 - Creating a Web Server and Client</h4>
-
+<article>
 <p>While each project has challenged me in its own way, this week’s Ruby on the Web assignment was a true test of my patience. I don’t know if it’s something that I’m just not getting, or if working with HTTP and servers really is that tricky, but this stuff just doesn’t seem to make the connection in my brain that everything else does. Even before I began TOP, when I studied Node.js I struggled with it compared to the regular browser JavaScript. Therefore, I wanted to use this week’s lesson to strengthen my deficiency. Sadly there wasn’t a whole lot of material before we were sent off to begin the project. So I would need to learn by trial and error…and mostly by studying other students’ code.</p>
 
 <p>I'm going to break this project down as simply as possible; going chunk of code by chunk of code...</p>
@@ -70,7 +70,7 @@ post_path = "thanks.html"</pre></code>
             params = JSON.parse(viking_hash) # parse the hash
             new_yield = "<li>Name: #{params['viking']['name']}</li><li>Email: #{params['viking']['email']}</li>"
             file = File.read(path) # open that file
-            body = file.gsub('<%= yield %>', new_yield) # sub parsed hash in body
+            body = file.gsub('&lt;%= yield %>', new_yield) # sub parsed hash in body
             client.print "HTTP/1.0 200 OK\r\n" +
                          "Content-Type: text/html\r\n" +
                          "Content-Length: #{body.bytesize}" +
@@ -146,7 +146,7 @@ if choice == "GET"
 <p>This might be the simplest piece of code in the entire project and needs no explanation.</p>
 
 <p>I have never commented so much on a project before and it took every single explanation for me to understand what was happening. This blog post also has added to my understanding, and will be something I look back on in the future. </p>
-
+    </article>
 <h3>February 22-23</h3>
     <ul>
         <li>Worked on and completed Ruby on the Web Project <a href="https://github.com/ks927/Projects/tree/master/RubyWebProject">GitHub</a></li>
@@ -166,7 +166,7 @@ if choice == "GET"
     <datetime>February 17 2017</datetime>
     <br>
     <h4>Week 6 - Files and I/O and Hangman</h4>
-
+<article>
 <p>I was ready to give up before I even started the project this week. It seemed like a mountain that was too steep and too high for me to climb, and I just wanted to move onto the next section before even attempting it. Alas, I figured I could at least practice what we learned in the lesson to load the dictionary into my script, so I started there. From there I figured I might as well iterate over the dictionary and find the words that were between five and seven characters long. It was at this point that I realized two things.</p>
 <ol>
     <li>I’m starting to break problems down like a programmer</li>
@@ -177,7 +177,7 @@ if choice == "GET"
 <p>Second, on a more narrow scope, I discovered that I would need to make a Game class and take an OOP approach towards this project. Using my strategy from the tic tac toe game, I sort of worked backwards again, imagining how the user might interact to play my hangman game. It begins with the command line asking for a user input. Depending on the response, a method within the class is run. The nucleus of the Game is the play loop, which interacts with the user, checking his/her guess, and showing what letters the user has guessed right or wrong. Also similar to my tic tac toe creation is the way in which I check if the game is over. I set up a method that sets the game_over instance variable to true if the game is won, lost, or saved.</p>
 
 <p>The difference between my hangman and tic tac toe games lies in the ability to save and load hangman files. In fact that’s what this section of TOP’s curriculum was on and the point of the project. Thus, in order to save the game, I created a method that asks the user to name the game he/she is playing, writes a file with that name to the saved directory, and utilizes the marshal library to serialize and dump the game file into the saved directory. The load method basically does the same thing in reverse. It asks the user for the name of the game file, finds it in the saved directory, and deserializes it.</p>
-
+    </article>
 <h3>February 16 2017</h3>
     <ul>
         <li>Completed Hangman project <a href="https://github.com/ks927/Projects/tree/master/Hangman">GitHub</a></li>
@@ -253,7 +253,7 @@ puts "-- End of analysis"</pre></code>
     <datetime>February 10 2017</datetime>
     <br>
     <h4>Week 5 - OOP and Tic Tac Toe</h4>
-
+<article>
 <p>Super Bowl hangover and a mid-week funeral meant this was not the most productive week so far, but there were some positive takeaways. After last week’s struggles, I knew I had to really dig in with the readings and tutorials before jumping into the projects, so I did just that. Peter Cooper’s Beginning Ruby book made me feel like an idiot in such a good way. I was supposed to have read the first 3 chapters last week in addition to five through eight this week, so I found a free pdf online and started from the beginning. It was like all the answers that left me completely dumbfounded to last week’s projects were in that book. That made me feel a lot better. Once I completed the assigned tutorials, readings, and quizzes, I set to work on the first project for this section: a Tic Tac Toe game.</p>
 
 
@@ -266,7 +266,7 @@ puts "-- End of analysis"</pre></code>
 <p>On initialization, class Board creates a board with 9 indeces, a player "X", and a game_over checker that is set to false. To play, you must create an object of Board, call the Board's player_move method, and pick an index on the board. After each move, the game checks to see if that index has already been selected, checks for a winner, and finally, changes turn to the "O" player.</p>
 
 <p>Within the Board class, I created a check_for_winner method with all the possible winning combinations. If either "X" or "O" meet any of these combinations, the game_over instance variable is set to true and a winning message is displayed. The change_turn method is also halted if the game_over variable is set to true.</p>
-
+    </article>
 <h3>February 9 2017</h3>
     <ul>
         <li><a href="http://www.eriktrautman.com/posts/ruby-explained-classes"></a>Erik Truatman post on Classes</li>
@@ -291,11 +291,11 @@ puts "-- End of analysis"</pre></code>
     <datetime>February 3 2017</datetime>
     <br>
     <h4>Week 4 - Bubble Sort</h4><a href="https://github.com/ks927/Projects/blob/master/RubyBuildingBlocks/bubble_sort.rb">GitHub</a>
-
+<article>
     <p>Bubble sort is a sorting algorithm used in programming that takes an array of items and places them in order. I came into this week with a pretty high level of intimidation and apprehension for this assignment because of bubble sort's reputation. It gets tossed around as a programming interview question that strikes fear into the minds of young coders. Needless to say, I've avoided and haven't looked forward to meeting it. The idea of the function, and in fact conceptualizing it, is not the hard part. You have two numbers next to each other. If the one to the left is greater than the one to the right, they switch. This continues until the greatest number is all the way to the right, the lowest is at the left, and the array is in order. My pseudocode looked good to me after a few minutes of reasoning out the steps, but I struggled with some of the Ruby syntax at first. That is until I googled, and found, a neat little trick for swapping x and y variables. Lets walk through the code:</p>
     <p>First we initialize a flag variable, and set it to true, to tell us whether the looping is done. Next we have to do a 2-dimensional each_with_index loop. As the array is being looped over with the first .each, the second .each is looping over every item and checking to see if each inside index is greater than the outside index. If so, they are swapped with that Ruby magic I discovered. Within this if statement, I set flag to false, so I know that the loop is occuring.</p>
     <p>Once out of the if statement, I double check that my loop performed what I wanted it to by resetting my flag to true, and printing the properly sorted array at the end.</p>
-
+    </article>
 <h3>February 2 2017</h3>
     <ul>
         <li>Completed Ruby Advanced Building Blocks project</li>

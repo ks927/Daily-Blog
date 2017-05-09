@@ -17,11 +17,11 @@
     <datetime>March 31 2017</datetime>
     <br>
     <h4>Week 12 - Deeper Into Git and Beginning Rails</h4>
-
+<article>
 <p> This week I decided to wrap up the Ruby Programming section of TOP, work on some things I’ve been meaning to do for my portfolio, and begin the Rails section. The last few weeks have been project-laden and thought-intensive, so this week was a good chance for me to take the iron out of the fire for a bit. That doesn’t mean I didn’t get anything done, however. The end of the Ruby section has a number of readings on Git, that delve deeper into the tool than just the add/commit/push commands that I’ve been using up to this point. I now have a more complete mental map of what is happening between my files and repositories. I also got around to writing a few Readme’s for projects that didn’t already have them in my GitHub - a key component for showing off your code. Finally, I began the much anticipated Rails section, albeit just a tiny portion. Already, it has piqued my interest so much that I’m itching to finish this post so that I can get back to that. </p>
 
 <p> There is a final project in the Ruby section that asks us to build a full-fledged chess board and game that I decided to skip. Thinking about the amount of time this would take me, I figured my time would be better spent on other things: such as sharpening my GitHub (the readmes I worked on), and moving onto the Rails section. I’m fairly confident in my Ruby abilities, and don’t think the chess project would give me any better advantage moving forward. Rails projects, I’m led to believe, is where I’m going to benefit the most in a personal project and/or on a portfolio. Furthermore, I think the whole point of the TOP’s Ruby section was to get familiar enough with Ruby so that we could understand the “Rails magic”. It was not necessarily to build elaborate Ruby projects. So for now, I am moving on. </p>
-
+</article>
 <h3>March 30 2017</h3>
     <ul>
         <li>Wrote Data Structures readme</li>
@@ -65,7 +65,7 @@
     <datetime>March 24 2017</datetime>
     <br>
     <h4>Week 11 - TDD or Not TDD &amp; Connect Four</h4>
-
+<article>
 <p>As it turns out, my woes with testing my tic tac toe game from last week were (somewhat) unfounded. After spending hours trying to figure out what I was doing wrong, I asked Stack Overflow and quickly got a response that my code was working on someone else’s machine, and it was likely that I was testing a file saved on the wrong path. In the end, all it took was me re-saving my original game file into the new directory with the spec file I had created. Though extremely frustrating for all the time I wasted, it was reassuring that I was writing the Rspec correctly. Here’s an abbreviated version of the game and spec file: </p>
 
 <code><pre>class Board
@@ -320,7 +320,7 @@ end</pre></code>
     <p>It took me hours of considering to figure out how to loop over my board and then write the loop into my indeces as it's written in the solution. It ended up being pretty simple, which is often the case. To find four in a row, I used an each loop of the columns within an each loop of the rows. Admittedly, I had no idea it was going to work until I tried the horizontal case, which I knew kept the same x-index, with an incrementing y-index. Once that worked, the rest was cake. For a vertical winner, the y stays the same and x increments. For a diagonal left the x increments while the y decrements, and for a diagonal right both x and y increment. </p>
 
        <p>As I mentioned, the tests for this game don't currently work, but I'm happy right now that the game is fully functional. I'll figure out the tests next.</p>
-
+    </article>
 <h3>March 22 2017</h3>
     <ul>
         <li>Completed Connect Four <a href="https://github.com/ks927/Projects/blob/master/Connect_four/lib/connect_four.rb">GitHub</a> but need to work on the testing</li>
@@ -343,7 +343,7 @@ end</pre></code>
     <datetime>March 17 2017</datetime>
     <br>
     <h4>Week 10 - Test Driven Development</h4>
-
+<article>
 <p>I’m writing this post as I am still struggling to grasp the concepts and syntax of the Rspec library. The very simple things I have no problem with. If it’s just testing a method or methods within a class, I can get it work. However, I spent the majority of the day yesterday trying to learn how to get my methods within an object to interact with each other within a test and call instance variables that were initialized when the object was created. Little nuances like that are still foreign to me, and I’m especially having trouble finding resources online that teach the basics, which is extremely frustrating. Nonetheless, I will walk through some of the basics of TDD and tests that I have applied to past projects here.</p>
 
 <p>recall the Caesar Cipher</p>
@@ -355,12 +355,12 @@ end</pre></code>
       ch = ch.ord
       if ch.between?(97, 122)  || ch.between?(65, 90)
         ch += (num % 26)
-          if ch > 122 || (ch > 90 && ch < 97)
+          if ch > 122 || (ch > 90 && ch &lt; 97)
             return ch -= 26
           end
       end
       ch = ch.chr
-      cipher << ch
+      cipher &lt;&lt; ch
     end
     puts cipher
 
@@ -402,7 +402,7 @@ end</pre></code>
     <code><pre>module Enumerable
     def my_each
         i = 0
-        while i < self.length
+        while i &lt; self.length
             yield(self[i])
             i +=1
         end
@@ -411,7 +411,7 @@ end</pre></code>
 
     def my_each_with_index
         i = 0
-       while i < self.length
+       while i &lt; self.length
            yield(self[i], i)
            i += 1
        end
@@ -421,7 +421,7 @@ end</pre></code>
     def my_select
         select = []
         i = 0
-        while i < self.length
+        while i &lt; self.length
            self.my_each do |i|
             if yield i
                select.push(i)
@@ -447,7 +447,7 @@ describe Enumerable do
 
     describe "select" do
        it "returns array with selected values" do
-           expect(array.select{ |item| item < 3  }).to eql([1,2])
+           expect(array.select{ |item| item &lt; 3  }).to eql([1,2])
        end
     end</pre></code>
 
@@ -455,7 +455,7 @@ describe Enumerable do
 
             <p>I am working on testing my Tic Tac Toe game, but as previously mentioned, am having trouble with the function interactions.</p>
 
-
+    </article>
 
 <h3>March 15-16 2017</h3>
     <ul>
@@ -494,7 +494,7 @@ describe StringCalculator do
         end
     end
 end</pre></code>
-
+    </article>
 <h3>March 13 2017</h3>
     <ul>
         <li>Updated weekly goals</li>
@@ -505,7 +505,7 @@ end</pre></code>
     <datetime>March 10 2017</datetime>
     <br>
     <h4>Week 9 - Data Structures</h4>
-
+<article>
 <p>Unlike the previous two weeks, which gave me trouble despite being familiar from prior independent studies, this week’s concepts introduced a new anxiety. As we are exploring more of the world of computer science, I am having more and more trouble finding what it is we are making the computer do. For example, when I started out, I was mainly studying HTML/CSS and JavaScript. This was all done in the browser, thus I could see the results of what I was doing instantly. Even when TOP switched over to Ruby and I started with the command line and files, I could see that I was taking input from the user, opening files and manipulating their data, and returning information to the user. </p>
 
 <p>This week, however, I lost my way. The lesson was on data structures, and there were three projects(practice problems) with a relatively sparse amount of material on the subject. I think I made the mistake of attempting the projects before fully understanding the topic so I will try to explain it here, in retrospect. A data structure, in the simplest terms, is an organized way to store data for your application. The two types we focused on were <em>linked lists</em> and <em>binary trees</em>. After a lot of hunting, I finally found an explanation that described linked lists in plain English <a href=“http://softwareengineering.stackexchange.com/questions/128520/what-are-concrete-rules-for-using-a-linked-list-instead-of-an-array”>here</a>. </p>
@@ -547,7 +547,7 @@ end</pre></code>
     <p>In the first code example, if you wanted to find Frank, you would have to traverse six nodes to get to him. This is a linked list that is sorted alphabetically from Alice to Frank. In the second example, it would only take you three nodes. This one's a little more complicated. If the name is shorter than the root(Chloe) it gets moved to the left, while if it's longer then it gets moved to the right. Subsequently, if it is shorter or longer than the next node, these same steps are followed until it gets placed. It is added complexity, but you can see the advantage. Here is my binary search project <a href="https://github.com/ks927/Projects/blob/master/Data_Structures/binary_trees.rb">GitHub</a></p>
 
     <p>And with that I think I've regained my footing in the world of computer science. No one can explain things better than you can to yourself. I have no doubt I'll get lost again next week. </p>
-
+    </article>
 <h3>March 8-9 2017</h3>
     <ul>
         <li>Completed Binary Search Tree project <a href="https://github.com/ks927/Projects/blob/master/Data_Structures/binary_trees.rb">GitHub</a></li>
@@ -570,15 +570,16 @@ end</pre></code>
     <datetime>March 3 2017</datetime>
     <br>
     <h4>Week 8 - Recursion</h4>
+    <article>
     <p>
         Recursion is the programming concept of calling a function from within itself. In effect this creates a loop of endless function calls if there is no condition stated that will end the program at a certain point. It is not extremely common to use recursion (thank God!) but it is very handy to know. Often times an iterator of some sort will suffice, but there are times when recursion will provide a more elegant solution.</p>
 
     <p>There is no better way to explain than to jump into some code…</p>
 <code><pre>def factorial(n)
-    return 1 if n <= 0
+    return 1 if n &lt;= 0
     n * factorial(n-1)
 end</pre></code>
-    <p>This is a factorial function that uses recursion. If you call factorial(5), within the program it will do 5 * factorial(4). This will then go a level deeper; meaning factorial(4) will get called and the function will run 4 * factorial(3). Again factorial(3) will get called and 3 * factorial(2) will get run. Then 2 * factorial(1) and finally 1 * factorial(0). Because we stated within the function to return 1 if n <= 0, the program does not blow the stack, but returns 1 when it reaches 0. 5*4*3*2*1 is output and we get 120.</p>
+    <p>This is a factorial function that uses recursion. If you call factorial(5), within the program it will do 5 * factorial(4). This will then go a level deeper; meaning factorial(4) will get called and the function will run 4 * factorial(3). Again factorial(3) will get called and 3 * factorial(2) will get run. Then 2 * factorial(1) and finally 1 * factorial(0). Because we stated within the function to return 1 if n &lt;= 0, the program does not blow the stack, but returns 1 when it reaches 0. 5*4*3*2*1 is output and we get 120.</p>
 
     <code><pre>def fib(n)
     return 0 if n == 0
@@ -592,7 +593,7 @@ end</pre></code>
 
 
     <p>Like last week’s lesson, this was another section that I studied and struggled with during my JavaScript days prior to TOP. Again, I did not enter the lesson discouraged. Instead, I was actually eager to possibly gain new perspectives on the topic and break through previous limitations I had while attempting to grasp the concept. The material TOP provided, in addition to practice problems, the project, and writing this blog have made me more confident in dealing with recursive methods, though I am still far from an expert.</p>
-
+    </article>
 <h3>March 2 2017</h3>
     <ul>
         <li>Began work on Linked Lists project</li>
