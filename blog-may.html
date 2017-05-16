@@ -13,6 +13,105 @@
 
     <main>
 
+<h3>The Odin Project Blog Post 18</h3>
+    <datetime>May 14 2017</datetime>
+    <br>
+    <h4>Week 18 - Active Record</h4>
+<article>
+    <p> Recall that Ruby on Rails applications follow a MVC (model-view-controller) flow. So far I have written about the controller and view, which leaves only the model left to be explained. In my previous blog post, I wrote about the database and how to use the <i>Structured Query Language</i> to access data from it. Fittingly enough, the model is where our app interacts with the database. However, after spending all that time last week learning how to make calls to a database using SQL, I found out this week that Rails uses the <i>Active Record</i> library and a feature called <i>migrations</i> to completely remove SQL from the coding process. The magic of Rails allows you to actually interact with the db using pure Ruby. Knowing that, testing the functionality of our database becomes doable via the rails console, and this week I learned about the console’s sandbox. </p>
+
+    <p>Before we can fire up the console, we need to create our User model, and like the creation of our controller, it all starts with the generate command. If I want my users to have a name and email upon creation, I’ll simply type into my terminal <code> rails g model User name:string email:string</code>. Among the files this creates is a migration in the db folder. </p>
+
+
+<code><pre>/db/migrate/20170510133733_create_users.rb
+class CreateUsers &lt; ActiveRecord::Migration[5.0]
+  def change
+    create_table :users do |t|
+      t.string :name
+      t.string :email
+
+      t.timestamps
+    end
+  end
+end
+</pre></code>
+
+    <p>This is a Ruby representation of a SQL creation of a table. The name of the table is users, the columns are <strong>name</strong> and <strong>email</strong>, and they are both strings. The final operation, t.timestamps, is a special command that creates two more columns <strong>created_at</strong> and <strong>updated_at</strong> for when a user is created and updated. In order to run the migration and complete the process of creating the database we need to “migrate up” by entering the <code>rails db:migrate</code> command into the terminal. This creates a SQL file in our db directory, and a database that should look like this: </p>
+
+<img class="db" src="images/databse.png" />
+
+    <p>Another file that our generate command created is the actual User model, which can be found in app/models/user.rb, and looks like this:</p>
+
+    <code><pre> app/models/user.rb
+    class User &lt; ApplicationRecord
+
+    end
+    </pre></code>
+
+    <p>This is the piece of code that inherits from the Active Record library. By firing up our <code>rails console --sandbox</code> in the terminal we can play around with the database without making any permanent changes to it. I can create a new user by entering:
+
+        <code><pre>&gt; user = User.new(name: "kyle" email: "ksheehan@example.com")
+        => #&lt;User id: nil, name: "kyle", email: "ksheehan@example.com",
+created_at: nil, updated_at: nil&gt;</pre></code></p>
+
+    <p>If I ask <code>user.valid?</code>, it will return <code>true</code>, because I haven't given my model any validations yet. So let's get into validations. Firstly, I want my users to have to fill in a name and email in order to get stored in the database, so this is the code I will place in my model: </p>
+
+    <code><pre>
+class User &lt; ApplicationRecord
+    validates :name,  presence: true
+    validates :email, presence: true
+end
+    </pre></code>
+
+    <p>Now if I try entering a new user in my console's sandbox with a blank name or email, <code>user.valid?</code> and <code>user.save</code> will both return false, and that user will not be sent to the db. Checking the validity of presence is the most elementary validation, so let's ramp up the complexity a bit. </p>
+
+    <code><pre>
+class User &lt; ApplicationRecord
+    before_save { email.downcase! }
+    validates :name, presence: true, length: { maximum: 50 }
+    VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
+    validates :email, presence: true, length: { maximum: 255 }, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
+    has_secure_password
+    validates :password, presence: true, length: { minimum: 6 }
+end
+    </pre></code>
+
+    <p>This is my completed model after I've made all of my validations. Though it looks intimidating, it's written in Ruby so it reads pretty straightforward, and we'll tackle it line-by-line. Before we can address the first line, however, we have to take a look at what we added to email. Specifically, I want to draw attention to the <code>uniqueness: { case_sensitive: false }</code> line. This tells the database that it should only accept unique emails, and “Foo@ExAMPle.CoM” and “foo@example.com” are the same. But some database adapters use case-sensitive indices, meaning they would not treat those two emails as the same. Therefore, the first line <code>before_save { email.downcase! }</code> downcases the email address before saving it.</p>
+
+    <p>Next, we see that both name and email validate length. If name is less than 50 characters, OR email is less than 255 characters, an error message will be displayed. The messy regular expression in the middle of the model just validates that the email the user enters follows the "foo@bar.com" email address format. </p>
+
+    <p>Finally, we arrive at the password validations. The first line <code>has_secure_password</code> is a powerful method that adds a lot of new functionality. But wait, there is no password column in my database, right? Correct. Therefore, I need to create a migration for it first. <code> rails g migration add_assword_digest_to_users password_digest:string</code> will create the following migration: </p>
+
+    <code><pre>
+    class AddPasswordDigestToUsers &lt; ActiveRecord::Migration[5.0]
+        def change
+            add_column :users, :password_digest, :string
+        end
+    end
+    </pre></code>
+
+    <p>"Password_digest" is just a synonym for hashed password; meaning the password the user enters will be stored in the database as a unique bit string. This means the only way to hack an account is to brute-force search possible passwords. As usual after we create a migration we must run <code>rails db:migrate</code>. This will make our database appear like so:</p>
+
+    <img class="db" src="images/pword_db.png" />
+
+    <p>To hash the password, there is a gem called <strong>bcrypt</strong> that needs to be added to the Gemfile and then of course <code>bundle install</code> will install it into the applicaton. <i>Now</i> that the password is digestible, I can add the validations that check for presence and length. Just to be sure, I'll go into my sandbox:</p>
+
+    <code><pre>&gt; User.create(name: "kyle", email: "ksheehan@example.com", password: "foobar", password_confirmation: "foobar")
+    => #&lt;User id: 1, name: "kyle", email: "ksheehan@example.com",
+created_at: "2016-05-23 20:36:46", updated_at: "2016-05-23 20:36:46",
+password_digest: "$2a$10$xxucoRlMp06RLJSfWpZ8hO8Dt9AZXlGRi3usP3njQg3..."&gt;</pre>
+</code>
+
+    <p>As you can see, I had to enter password and then confirm it by entering again. The password_digest is a huge hashed string so that even if my database is compromised, my users' passwords are safe. </p>
+
+        </article>
+
+<h3>May 12 2017</h3>
+        <ul>
+            <li>Bug fixes in Caesar Cipher</li>
+            <li>Added links to projects on personal site</li>
+        </ul>
+
 <h3>May 11 2017</h3>
         <ul>
             <li>Completed Modeling Users tutorial</li>
@@ -52,7 +151,7 @@
     <br>
     <h4>Week 17 - Dealing With the Database and SQL</h4>
 <article>
-    <p> The next lily pad in my learning process is something I’ve often overlooked but is absolutely necessary to have some understanding of for building CRUD applications: <strong>the database</strong>. It’s not one of the flashy things you want to learn because the database isn’t presented to the user at any point, and for me it always seemed like an mysterious, esoteric place that I’d never want to touch. But after this week’s lesson, the SQL language is nowhere near one of the more difficult concepts I've faced. It got trickier towards the end of the project when dealing with multiple JOINs and SELECTs, but from what I understand, we will hardly need to know things like that off the top of our heads. ActiveRecord and Google can ease the burden. Like the rest of the Rails magic we’ve been learning though, it is good to have at least a vanilla understanding of SQL so that we know what is happening and how to interact with our database.</p>
+    <p> The next lily pad in my learning process is something I’ve often overlooked but is absolutely necessary to have some understanding of for building CRUD applications: <strong>the database</strong>. It’s not one of the flashy things you want to learn because the database isn’t presented to the user at any point, and for me it always seemed like a mysterious, esoteric place that I’d never want to touch. But after this week’s lesson, the SQL language is nowhere near one of the more difficult concepts I've faced. It got trickier towards the end of the project when dealing with multiple JOINs and SELECTs, but from what I understand, we will hardly need to know things like that off the top of our heads. ActiveRecord and Google can ease the burden. Like the rest of the Rails magic we’ve been learning though, it is good to have at least a vanilla understanding of SQL so that we know what is happening and how to interact with our database.</p>
 
 <p> The first step in a CRUD application is Create. Therefore, let’s look at creating a table in SQL. For this post, I will use a very simple example. It will be a three-column table containing information that you might see as a restaurant's inventory. If I type into my editor <code> create table Categories (CategoryID int, CategoryName varchar, Description varchar);</code>, I’m going to get three column headers.</p>
 
