@@ -13,6 +13,98 @@
 
     <main>
 
+<h3>The Odin Project Blog Post 19</h3>
+    <datetime>May 19 2017</datetime>
+    <br>
+    <h4>Week 19 - Connecting the Dots with Forms </h4>
+<article>
+    <p> For the past several weeks, I’ve been learning about each individual part of a Rails application as its own entity. First, I learned how to set up a controller, and made sure via testing that all the links and worked were routed properly. Next, I learned how embedded Ruby in the views files gets displayed to the screen. Last week was the back end with validations and Active Record. This week, I finally got to take some user input and incorporate all those things in an interactive way. The basis of the lesson was <i>forms</i>, how Rails generates params, and how they interact with the controller. </p>
+
+<p>Here is what your typical form would look like for new user registration in HTML: </p>
+
+<code><pre> /app/views/new.html.erb
+<xmp>
+<form accept-charset="UTF-8" action="/users" method="post" ></form> %>
+   <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
+   <label for="username">Username</label>
+   <input name="user[username]" type="text" />
+   <br>
+   <label for="email">Email</label>
+   <input name="user[email]" type="text" />
+   <br>
+   <label for="password">Password</label>
+    <input name="user[password]" type="password" />
+    <input name="commit" type="submit" value="submit" />
+    </xmp>
+</pre></code>
+
+<p>We tell the form to take "/users" as its action and "post" as its method. This means that the form will create a new User object and direct the client to the "/users" path. How does it know what to use to create this new object? Recall during the Sinatra lesson how parameters were routed from inputs using mainly the <code> get '/' do</code> block. It's the same principal here except we are using the POST verb. Using the name of the input, we'll establish our user object's username, email, and password. Meanwhile in the controller, we need something to accept them. Here is what that will look like: </p>
+
+<code><pre> /app/controllers/users_controller.rb
+class UsersController &lt; ApplicationController
+
+def new
+  @user = User.new
+end
+
+def create
+  @user = User.new(username: params[:username], email: params[:email], password: params[:password])
+      if @user.save
+        redirect_to new_user_path
+      else
+        render :new
+      end
+end
+
+end
+</pre></code>
+
+<p>Within the create method, our @user takes a hash of parameters that get captured from the form inputs. If the new user gets saved with the parameters he/she puts in, a new blank form will appear. That is, if my routes are set up properly.
+
+<code><pre> /config/routes.rb
+Rails.application.routes.draw do
+  resources :users, only: [ :new, :create ]
+end
+</pre></code>
+
+<p><code>resources :users</code> creates a route to all the CRUD pages for users, but right now I only need new and create. Hence the <code>only:</code> specification. So thus far I have my routes, controller, and form set up and functioning, but the form is just pure HTML. Let's take a look at the <i>Rails-i-fied</i> version.</p>
+
+<pre><code> /app/views/new.html.erb
+<%= form_for @user do |f| %>
+<%= f.label :username, "Username: " %>
+<%= f.text_field :username, value: 'Your Name' %> <br />
+<%= f.label :email, "Email: " %>
+<%= f.email_field :email, value: 'example@example.com' %> <br />
+<%= f.label :password, "Paswword: " %>
+<%= f.password_field :password %> <br />
+<%= f.submit %>
+<% end %>
+</code></pre>
+
+<p>There are couple things I like about this code. The form_for method takes a block and applies it to the @user instance variable. Therefore, the ":username", ":email", and ":password" parameters are automatically read by Rails as "user[username]" and so on. Secondly, Rails automatically generates the authenticity token for you. Third, it automatically knows to make a "post" request because @user is of class User, and the post method is the proper HTTP verb for creating a new object. Anything that takes code out of my hands is ok with me.</p>
+
+<p>To finish up, I'll clean up the messy controller.  The user params can be stored in their own private method to shorten the call to User.new.</p>
+
+<code><pre>
+ def create
+        @user = User.new(user_params)
+        if @user.save
+            redirect_to new_user_path
+        else
+            render :new
+        end
+    end
+
+private
+
+def user_params
+        params.require(:user).permit(:username, :email, :password)
+    end
+</pre></code>
+
+<p>This blog post only goes into the connection between form and controller. If we wanted to redirect to a different page when saving a new user, we would need to flesh out the show method and create a view for it. All I wanted to explain here was the Rails way of writing forms and how the params interact with the controller.</p>
+
+
 <h3>May 18 2017</h3>
         <ul>
             <li>Completed re_former project <a href="https://github.com/ks927/re_former">GitHub</a></li>
