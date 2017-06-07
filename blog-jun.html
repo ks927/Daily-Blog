@@ -13,10 +13,45 @@
 
     <main>
 
+    <h3>June 6 2017</h3>
+        <ul>
+            <li>Read Rails Guide <a href="http://guides.rubyonrails.org/active_record_querying.html">Active Record Querying</a></li>
+            <li>Read TOP's section on Advanced Active Record querying and polymorphism</li>
+            <li>Leetcode Reverse Integer problem</li>
+<code><pre>
+def reverse(x)
+  arr = x.to_s.split("")
+  if arr[0] == "-"
+    arr[1..-1].reverse.join.to_i * -1
+  else
+    arr.reverse.join.to_i
+  end
+end
+
+reverse(321) => 321
+reverse(-54321) => -12345
+</pre></code>
+        </ul>
+
     <h3>June 2, 5 2017</h3>
         <ul>
             <li>Began work on members-only app</li>
             <li>Weekly goals</li>
+            <li>Leetcode Two Sum problem</li>
+<code><pre>
+def sums(arr, target)
+  arr.each_with_index do |outer, x|
+    arr.each_with_index do |inner, y|
+      if arr[x] + arr[y] == target
+        return [x, y]
+      end
+    end
+  end
+end
+
+sums([2,7,11,18], 9) => [0,1]
+sums([2,7,11,18], 18) => [1,2]
+</pre></code>
         </ul>
 
     <h3>June 1 2017</h3>
