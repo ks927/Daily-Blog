@@ -13,6 +13,186 @@
 
     <main>
 
+    <h3>The Odin Project Blog Post 20</h3>
+    <datetime>June 12 2017</datetime>
+    <br>
+    <h4>Week 23 - Rolling My Own Authentication </h4>
+<article>
+
+<p> After a busy couple of weeks with illness and traveling and Hartl tutorials, I’m back to writing a blog post about rolling my own authentication system with Ruby on Rails. This past week I created a full-fledged app from scratch with the most autonomy that TOP has given it’s users as of yet. It was challenging, but not overly, and segments are still puzzling me, but there is still a ways to go in the Rails path so I expect those gray areas to become clearer with more practice. There is a lot to get into here so let’s not waste time: </p>
+
+<p> After I created my app, the first step was to set up the User model. That means validations. For my Members Only app, I wanted a site that allows users to see and create posts, as well as see who the authors of the posts are, but <strong> does not </strong> allow non-users to create posts or see the authors of posts. So I used the basic model from a previous exercise and the same validations for name, email, and password_digest. </p>
+
+<code><pre> /app/models/user.rb
+
+class User &lt; ApplicationRecord
+    before_save { email.downcase! }
+    validates :name, presence: true
+    VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
+    validates :email, presence: true, length: { maximum: 25 }, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
+    has_secure_password
+    validates :password, presence: true, length: { minimum: 6 }
+</pre></code>
+
+<p> Next, I set up the sessions controller for signing in users. Things started to get more complex here. I had two methods within the sessions controller - new and create - and my form looked like this: </p>
+
+<code><pre> /app/views/sessions/new.html.erb
+<xmp>
+<h1>Sign In</h1>
+
+<div class="row">
+ <div class="col-md-6 col-md-offset-3">
+
+    <%= form_for(:session, url: signin_path) do |f| %>
+
+     <%= f.label :name %>
+     <%= f.text_field :name, class: 'form-control' %>
+
+     <%= f.label :email %>
+     <%= f.email_field :email, class: 'form-control' %>
+
+     <%= f.label :password %>
+     <%= f.password_field :password, class: 'form-control' %>
+
+
+     <%= f.submit "Sign in", class: "btn btn-primary" %>
+
+     <% end %>
+
+    </div>
+</div>
+</xmp>
+</pre></code>
+
+<p> First off, sessions#new routes to /signin; that's why form_for needs to be directed there. Now for the first tricky part: setting up the user’s remember_token in ActiveRecord. I needed to add a remember_digest migration, create a remember_token attribute accessor, create a remember method to digest the token, and save it for my user. Luckily, I had already done something almost identical in the Hartl tutorial. This is what it looks like in the end: </p>
+
+<code><pre> /app/models/user.rb
+
+class User &lt; ApplicationRecord
+    attr_accessor :remember_token
+    before_save { email.downcase! }
+    validates :name, presence: true
+    VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
+    validates :email, presence: true, length: { maximum: 25 }, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
+    has_secure_password
+    validates :password, presence: true, length: { minimum: 6 }
+
+    def User.digest(string)
+        Digest::SHA1.hexdigest(string)
+    end
+
+    def User.new_token
+        SecureRandom.urlsafe_base64
+    end
+
+    def remember
+       self.remember_token = User.new_token
+       update_attribute(:remember_digest, User.digest(remember_token))
+    end
+
+end
+</pre></code>
+
+<p>The remember method takes the remember_token attr_accessor and passes it to my User.new_token method where Secure.Random_urlsafe_base64 turns it into a random string. Remember then updates the :remember_digest attributes by passing this random string to the User.digest method and encrypting it with the Digest::SHA1.hexdigest method.</p>
+
+<p> With my users' remember_token safely encrypted in the database, I moved onto the sessions creation function. In order to authenticate the user, the params method checks the email from the form, and compares it to the hashed password that’s been stored in the database for that user. If we have a match, a method within the application_controller signs them in. This sign_in function uses Rails’ session method to place a temporary cookie on the browser containing an encrypted version of their user id, which allows that user to traverse subsequent pages of the site and remain logged in. However, the session expires immediately when the browser is closed, and we want a permanent cookie that lasts until the user signs out. Thus, a second remember function was necessary to store the user id in a cookie. The end result can be seen here: </p>
+
+<code><pre> /app/controllers/application_controller.rb
+
+class ApplicationController &lt; ActionController::Base
+  protect_from_forgery with: :exception
+
+  # Logs in given user
+  def sign_in(user)
+      session[:user_id] = user.id
+  end
+
+
+  # Remembers given user in persistent session
+  def remember(user)
+     user.remember
+     cookies.permanent.signed[:user_id] = user.id
+     cookies.permanent[:remember_token] = user.remember_token
+  end
+</pre></code>
+
+<p> Now for the hardest part for me to wrap my head around: the current_user methods. These are necessary for retrieving your logged in user on subsequent pages and referencing the current user in other methods which we’ll see later. The first method retrieves a <code>@current_user</code> instance variable from the database by finding the logged in user’s encrypted user id.</p>
+
+<code><pre>
+# Returns current signed-in user
+def current_user
+  if session[:user_id]
+    @current_user ||= User.find_by(id: session[:user_id])
+  elsif cookies.signed[:user_id]
+    user = User.find_by(id: cookies.signed[:user_id])
+    if user && user.authenticated?(:remember, cookies[:remember_token])
+      sign_in user
+      @current_user = user
+    end
+  end
+end
+</pre></code>
+
+<p> And the second method just returns true if the given user is equal to the current user </p>
+
+<code><pre>
+# Returns true if the current user is the given user
+def current_user?(user)
+      user == current_user
+  end
+</pre></code>
+
+<p>With sign_in, remember, and the current_user methods defined, my creation method is now complete. Let's take a look at my session controller:</p>
+
+<code><pre> /app/controllers/sessions_controller.rb
+
+class SessionsController &lt; ApplicationController
+
+  def new
+  end
+
+  def create
+      @user = User.find_by(email: params[:session][:email])
+      if @user && @user.authenticate(params[:session][:password])
+          sign_in @user
+          remember @user
+          flash[:success] = "You're signed in!"
+          redirect_to root_url
+      else
+          flash.now[:error] = "Invalid username/password. Try again."
+          render 'new'
+      end
+  end
+
+  def delete
+     sign_out
+     flash[:success] = "You're signed out!"
+     redirect_to root_url
+  end
+end
+</pre></code>
+
+<p>We can see the first step within create is finding the @user by comparing the email params with the hashed password as explained earlier. But what is within the delete method? In order to successfully sign out a user, there are a few things that need to be "undone." Their sessions and cookies I created need to be deleted. So in other words, my site needs to forget who they are, and @current_user needs to be set to nil. I broke the sign_out method into two functions in the application controller:</p>
+
+<code><pre>
+  # End session and forget user
+  def sign_out
+      forget(current_user)
+      session.delete(:user_id)
+      @current_user = nil
+  end
+
+  # Delete cookies
+  def forget(user)
+      cookies.delete(:user_id)
+      cookies.delete(:remember_token)
+  end
+</pre></code>
+
+<p>Finally, to get the delete method to work on the site, I needed to use the code <code><%= link_to "Sign out", signout_path, method: :delete %></code>. The <code>method: :delete</code> being the unique part here. This is actually JavaScript within the Rails code because web browsers cannot issue DELETE requests.</p>
+
+<p>And with that, my users can sign in, be remembered with a cookie, and sign out. The other half of the app was creating posts, but for length's sake I'll stop here. I now have the ability to "roll my own auth", but honestly I look forward learning to some of the gems that will do that lifting for me.</p>
+
     <h3>June 8 2017</h3>
         <ul>
             <li>Struggled to but eventually got sample data working on heroku for members-only app <a href="https://afternoon-everglades-65571.herokuapp.com/">Members Only</a></li>
