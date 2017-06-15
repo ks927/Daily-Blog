@@ -13,6 +13,29 @@
 
     <main>
 
+    <h3>June 14 2017</h3>
+        <ul>
+            <li>Began work on Private Events app</li>
+            <li>Worked on personal site</li>
+        </ul>
+
+    <h3>June 13 2017</h3>
+        <ul>
+            <li>Complete Hartl Tutorial <a href="https://www.railstutorial.org/book/user_microposts">User Microposts</a></li>
+            <li>Leetcode common prefix problem</li>
+            <code><pre>
+def common_prefix(arr)
+  return '' if arr.empty?
+  min, max = arr.minmax
+  idx = min.size.times{ |i| break i if min[i] != max[i] }
+  min[0...idx]
+end
+
+common_prefix(['predate', 'precedent', 'prefix'])
+=> 'pre'
+            </pre></code>
+        </ul>
+
     <h3>The Odin Project Blog Post 20</h3>
     <datetime>June 12 2017</datetime>
     <br>
