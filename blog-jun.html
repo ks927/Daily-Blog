@@ -13,6 +13,40 @@
 
     <main>
 
+    <h3>The Odin Project Blog Post 21</h3>
+    <datetime>June 27 2017</datetime>
+    <br>
+    <h4>Week 25 - “Has_many :through” Associations </h4>
+<article>
+
+<p> These past couple weeks have been spent building the most complex project to-date. It is a <link>Private Events<link> application where a user can sign up, create events, and attend other events. Sounds simple on the surface, but at the database level is where it gave me a lot of trouble. Up until now, I’d only dealt with two related tables in my model. A User has_many :posts or a Post has_many :users etc. For this project, a User can create(or host) many events, a User can attend many events, and an Event can be attended by many users. This specific kind of association is called a has_many :through relationship because it requires a <i>third</i> database table to relate the users and events through. Then when I finally got it working in my development environment, it didn’t work on Heroku so I had to almost start all over for the production environment. Needless to say this was a time-consuming and frustrating, but rewarding learning experience. I encountered a problem at every stage of the process from development, to version control, to Heroku deployment, but persisted until the job was complete. Here is my attempted explanation of has_many :through: </p>
+
+    <p>First and foremost, I know I need a different type of association for this application because my <strong>Events</strong> are going to have different types of <strong>User</strong> (creator and attendee) associations, and my <strong>Users</strong> are going to have different types of <strong>Event</strong> (event and attended_event) associations. Therefore, I need to let Rails know which one I am asking for via my models. That's where the through table comes in to play. It acts as a join table and creates new columns to be referenced. In this case, an <code>attendee_id</code> column for the <strong>User</strong> class and an <code>attended_event_id</code> column for the <strong>Event</strong> class.</p>
+
+<code><pre>
+/app/models/user.rb
+class User &lt; ApplicationRecord
+    has_many :events, :foreign_key => "creator_id"
+    has_many :attendances, :foreign_key => :attendee_id
+    has_many :attended_events, :through => :attendances, :source => :attended_event
+
+/app/models/event.rb
+class Event &lt; ApplicationRecord
+    belongs_to :creator, :class_name => "User"
+    has_many :attendances, :foreign_key => :attended_event_id
+    has_many :attendees, :through => :attendances, source: :attendee
+
+/app/models/attendance.rb
+class Attendance &lt; ApplicationRecord
+    belongs_to :attendee, :class_name => "User"
+    belongs_to :attended_event, :class_name => "Event"
+end
+</pre></code>
+
+    <p>Looking at the code  above, let's begin with the Attendance model. We associate it with the User model with a <code>belongs_to :attendee</code> reference. Up in the User model, we accept this relationship with the <code>has_many :attendances, :foreign_key => :attendee_id</code> reference. The foreign_key is essential because without it Rails would be looking for a column named "attendance_id". The same associations are made for Attendance and Event but with attended_event and attended_event_id. Now that our original tables are connected to the new through table, they need a connection to each other. User gets <code>has_many :attended_events, :through => :attendances, :source => :attended_event</code> while Event gets <code>has_many :attendees, :through => :attendances, source: :attendee</code> because remember - attended_event's class_name is Event within the attendance model while attendee's class_name is User. The source option at the end of these commands is just like class_name but for irregularly named associations in the through table.</p>
+
+    <p>With these associations properly set up, I was able to use constructs like <code>@event.attendees</code> in my controllers and views, make model methods using syntax such as <code>self.attendeded_events</code> and <code>self.attendances.create</code>, and generate an attendances controller that used this method <code>current_user.attendances.build</code>. </p>
+
     <h3>June 26 2017</h3>
         <ul>
             <li>Weekly goals</li>
